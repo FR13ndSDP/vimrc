@@ -12,11 +12,12 @@ set nocompatible
 
 " Turn on syntax highlighting.
 syntax on
+colorscheme monokai
 set cindent
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
-
+set expandtab
 " Disable the default Vim startup message.
 set shortmess+=I
 
@@ -72,15 +73,15 @@ set mouse+=a
 " bad habit. The former is enforceable through a .vimrc, while we don't know
 " how to prevent the latter.
 " Do this in normal mode...
-nnoremap <Left>  :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
-nnoremap <Up>    :echoe "Use k"<CR>
-nnoremap <Down>  :echoe "Use j"<CR>
+" nnoremap <Left>  :echoe "Use h"<CR>
+" nnoremap <Right> :echoe "Use l"<CR>
+" nnoremap <Up>    :echoe "Use k"<CR>
+" nnoremap <Down>  :echoe "Use j"<CR>
 " ...and in insert mode
-inoremap <Left>  <ESC>:echoe "Use h"<CR>
-inoremap <Right> <ESC>:echoe "Use l"<CR>
-inoremap <Up>    <ESC>:echoe "Use k"<CR>
-inoremap <Down>  <ESC>:echoe "Use j"<CR>
+" inoremap <Left>  <ESC>:echoe "Use h"<CR>
+" inoremap <Right> <ESC>:echoe "Use l"<CR>
+" inoremap <Up>    <ESC>:echoe "Use k"<CR>
+" inoremap <Down>  <ESC>:echoe "Use j"<CR>
 
 "映射ESC
 inoremap jk <esc>
@@ -96,29 +97,39 @@ inoremap " <c-r>=QuoteDelim('"')<CR>
 inoremap ' <c-r>=QuoteDelim("'")<CR>
 
 function ClosePair(char)
- if getline('.')[col('.') - 1] == a:char
- return "\<Right>"
- else
- return a:char
- endif
+	if getline('.')[col('.') - 1] == a:char
+		return "\<Right>"
+	else
+		return a:char
+	endif
 endf
 
 function CloseBracket()
- if match(getline(line('.') + 1), '\s*}') < 0
- return "\<CR>}"
- else
- return "\<Esc>j0f}a"
- endif
+	if match(getline(line('.') + 1), '\s*}') < 0
+		return "\<CR>}"
+	else
+		return "\<Esc>j0f}a"
+	endif
 endf
 
 function QuoteDelim(char)
- let line = getline('.')
- let col = col('.')
- if line[col - 2] == "\\"
- return a:char
- elseif line[col - 1] == a:char
- return "\<Right>"
- else
- return a:char.a:char."\<Esc>i"
- endif
+	let line = getline('.')
+	let col = col('.')
+	if line[col - 2] == "\\"
+		return a:char
+	elseif line[col - 1] == a:char
+		return "\<Right>"
+	else
+		return a:char.a:char."\<Esc>i"
+	endif
 endf
+"解决TMUX高亮不正确
+if &term =~ '256color'
+	set term=screen-256color
+	set t_ut=
+endif
+
+"nerdtree config
+map <F2> :NERDTreeToggle<CR>
+let g:NERDTreeWinSize = 25 "设定 NERDTree 视窗大小
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
