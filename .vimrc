@@ -12,16 +12,20 @@ set nocompatible
 
 " Turn on syntax highlighting.
 syntax on
-colorscheme monokai
+colorscheme onedark 
 set cindent
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
 set expandtab
+autocmd FileType make set noexpandtab
 " Disable the default Vim startup message.
 set shortmess+=I
 
-" Show line numbers.
+" Show relative line numbers.
+set relativenumber
+
+" show line number
 set number
 
 " This enables relative line numbering mode. With both number and
@@ -88,41 +92,11 @@ inoremap jk <esc>
 "自动补全括号
 inoremap ( ()<Esc>i
 inoremap [ []<Esc>i
-inoremap { {<CR>}<Esc>O
-autocmd Syntax html,vim inoremap < <lt>><Esc>i| inoremap > <c-r>=ClosePair('>')<CR>
-inoremap ) <c-r>=ClosePair(')')<CR>
-inoremap ] <c-r>=ClosePair(']')<CR>
-inoremap } <c-r>=CloseBracket()<CR>
-inoremap " <c-r>=QuoteDelim('"')<CR>
-inoremap ' <c-r>=QuoteDelim("'")<CR>
+"inoremap { {}<Esc>i<CR><ESC>V<O
+inoremap ' ''<Esc>i
+inoremap " ""<Esc>i
+autocmd Syntax html,vim inoremap < <lt>><Esc>i
 
-function ClosePair(char)
-	if getline('.')[col('.') - 1] == a:char
-		return "\<Right>"
-	else
-		return a:char
-	endif
-endf
-
-function CloseBracket()
-	if match(getline(line('.') + 1), '\s*}') < 0
-		return "\<CR>}"
-	else
-		return "\<Esc>j0f}a"
-	endif
-endf
-
-function QuoteDelim(char)
-	let line = getline('.')
-	let col = col('.')
-	if line[col - 2] == "\\"
-		return a:char
-	elseif line[col - 1] == a:char
-		return "\<Right>"
-	else
-		return a:char.a:char."\<Esc>i"
-	endif
-endf
 "解决TMUX高亮不正确
 if &term =~ '256color'
 	set term=screen-256color
@@ -133,3 +107,34 @@ endif
 map <F2> :NERDTreeToggle<CR>
 let g:NERDTreeWinSize = 25 "设定 NERDTree 视窗大小
 autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+"c++语法高亮插件
+
+"Highlighting of class scope is disabled by default. To enable set
+
+let g:cpp_class_scope_highlight = 1
+"Highlighting of member variables is disabled by default. To enable set
+
+let g:cpp_member_variable_highlight = 1
+"Highlighting of class names in declarations is disabled by default. To enable set
+
+let g:cpp_class_decl_highlight = 1
+"Highlighting of POSIX functions is disabled by default. To enable set
+
+"let g:cpp_posix_standard = 1
+"There are two ways to highlight template functions. Either
+
+"let g:cpp_experimental_simple_template_highlight = 1
+"which works in most cases, but can be a little slow on large files. Alternatively set
+
+let g:cpp_experimental_template_highlight = 1
+"which is a faster implementation but has some corner cases where it doesn't work.
+
+" airline Theme
+let g:airline_theme='onedark'
+
+if !exists('g:airline_symbols')
+let g:airline_symbols = {}
+endif
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.branch = '⎇'
